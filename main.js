@@ -1,11 +1,11 @@
 // Register the Service Worker
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
-        .then(function(registration) {
-            console.log('Service Worker registered with scope:', registration.scope);
-        }).catch(function(error) {
-            console.error('Service Worker registration failed:', error);
-        });
+    .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+    }).catch(function(error) {
+        console.error('Service Worker registration failed:', error);
+    });
 }
 
 // Create a new Web Worker instance
@@ -26,8 +26,8 @@ worker.onmessage = function(event) {
         return;
     }
 
-    // Log the processed data or display it on the page
-    console.log('Processed data:', data);
+    // Store the full data for filtering
+    amiiboData = data;
 
     // Display the processed data on the page
     displayData(data);
@@ -51,3 +51,18 @@ function displayData(data) {
         output.appendChild(div);
     });
 }
+
+// Add event listener for search input
+document.getElementById('search').addEventListener('input', function(event) {
+    const searchTerm = event.target.value.toLowerCase();
+
+    // Filter the amiibo data based on the search term
+    const filteredData = amiiboData.filter(amiibo =>
+        amiibo.name.toLowerCase().includes(searchTerm) ||
+        amiibo.gameSeries.toLowerCase().includes(searchTerm) ||
+        amiibo.amiiboSeries.toLowerCase().includes(searchTerm)
+    );
+
+    // Display the filtered data
+    displayData(filteredData);
+});
