@@ -14,6 +14,9 @@ const worker = new Worker('worker.js');
 // Specify the API URL for fetching the amiibo data
 const apiUrl = 'https://www.amiiboapi.com/api/amiibo/';
 
+// Store the fetched data to use for filtering
+let amiiboData = [];
+
 // Send the API URL to the worker
 worker.postMessage(apiUrl);
 
@@ -30,7 +33,7 @@ worker.onmessage = function(event) {
     amiiboData = data;
 
     // Display the processed data on the page
-    displayData(data);
+    displayData(amiiboData);
 };
 
 // Function to display the processed data in the DOM
