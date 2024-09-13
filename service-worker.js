@@ -52,10 +52,14 @@ self.addEventListener('fetch', event => {
                 }
 
                 return fetch(request).then(networkResponse => {
-                    return caches.open(API_CACHE).then(cache => {
-                        cache.put(request, networkResponse.clone()); // Cache the API response
-                        return networkResponse;
-                    });
+                    // Only cache if the response is valid and comes from the same origin
+                    if (networkResponse && networkResponse.status === 200 && networkResponse.type === 'basic') {
+                        return caches.open(API_CACHE).then(cache => {
+                            cache.put(request, networkResponse.clone()); // Cache the API response
+                            return networkResponse;
+                        });
+                    }
+                    return networkResponse;
                 });
             })
         );

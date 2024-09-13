@@ -17,6 +17,9 @@ const apiUrl = 'https://www.amiiboapi.com/api/amiibo/';
 // Send the API URL to the worker
 worker.postMessage(apiUrl);
 
+// Store the fetched data to use for filtering
+let amiiboData = [];
+
 // Listen for messages from the worker
 worker.onmessage = function(event) {
     const data = event.data;
@@ -30,8 +33,17 @@ worker.onmessage = function(event) {
     amiiboData = data;
 
     // Display the processed data on the page
-    displayData(data);
+    displayData(amiiboData);
 };
+
+// Check if the user is online or offline before making the API call
+if (navigator.onLine) {
+    // Send the API URL to the worker
+    worker.postMessage(apiUrl);
+} else {
+    // If offline, show a message
+    document.getElementById('output').innerHTML = 'You are offline. Showing cached data, if available.';
+}
 
 // Function to display the processed data in the DOM
 function displayData(data) {
